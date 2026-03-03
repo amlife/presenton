@@ -138,3 +138,16 @@ def get_codex_account_id_env():
 
 def get_codex_model_env():
     return os.getenv("CODEX_MODEL")
+
+
+# Bedrock
+def get_bedrock_bearer_token_env():
+    return os.getenv("AWS_BEARER_TOKEN_BEDROCK")
+
+
+def get_bedrock_region_env():
+    return os.getenv("AWS_REGION")
+
+
+def get_bedrock_model_env():
+    return os.getenv("BEDROCK_MODEL")

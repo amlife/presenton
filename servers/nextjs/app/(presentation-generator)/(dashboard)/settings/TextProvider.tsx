@@ -44,6 +44,8 @@ const TextProvider = ({
                 return 'OLLAMA_MODEL';
             case 'custom':
                 return 'CUSTOM_MODEL';
+            case 'bedrock':
+                return 'BEDROCK_MODEL';
             default:
                 return '';
         }
@@ -59,6 +61,8 @@ const TextProvider = ({
                 return 'ANTHROPIC_API_KEY';
             case 'custom':
                 return 'CUSTOM_LLM_API_KEY';
+            case 'bedrock':
+                return 'BEDROCK_BEARER_TOKEN';
             default:
                 return '';
         }
@@ -68,6 +72,7 @@ const TextProvider = ({
     const currentApiKey = currentApiKeyField ? ((llmConfig as Record<string, unknown>)[currentApiKeyField] as string || '') : '';
     const currentCustomUrl = llmConfig.CUSTOM_LLM_URL || '';
     const currentOllamaUrl = llmConfig.OLLAMA_URL || '';
+    const currentAwsRegion = llmConfig.AWS_REGION || '';
     const modelLabel = selectedProviderMeta?.label || selectedProvider;
 
     useEffect(() => {
@@ -81,7 +86,7 @@ const TextProvider = ({
         if (currentModelField) {
             onInputChange('', currentModelField);
         }
-    }, [selectedProvider, currentApiKey, currentCustomUrl, currentOllamaUrl]);
+    }, [selectedProvider, currentApiKey, currentCustomUrl, currentOllamaUrl, currentAwsRegion]);
 
     const onApiKeyChange = (llm: keyof typeof LLM_PROVIDERS, value: string) => {
         if (llm === 'ollama') {
@@ -98,13 +103,16 @@ const TextProvider = ({
                         ? 'ANTHROPIC_API_KEY'
                         : llm === 'custom'
                             ? 'CUSTOM_LLM_API_KEY'
-                            : '';
+                            : llm === 'bedrock'
+                                ? 'BEDROCK_BEARER_TOKEN'
+                                : '';
         if (keyField) {
             onInputChange(value, keyField);
         }
     };
 
     const fetchAvailableModels = async () => {
+        if (selectedProvider === 'bedrock') return;
         if (selectedProvider === 'openai' && !currentApiKey) return;
         if (selectedProvider === 'google' && !currentApiKey) return;
         if (selectedProvider === 'anthropic' && !currentApiKey) return;
@@ -333,12 +341,30 @@ const TextProvider = ({
                                     placeholder="OpenAI-compatible URL"
                                 />
                             )}
+                            {selectedProvider === 'bedrock' && (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={currentAwsRegion}
+                                        onChange={(e) => onInputChange(e.target.value, 'AWS_REGION')}
+                                        className="w-full mt-2 px-2 py-3 outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                                        placeholder="AWS Region (e.g. us-east-1)"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={currentModel}
+                                        onChange={(e) => onInputChange(e.target.value, 'BEDROCK_MODEL')}
+                                        className="w-full mt-2 px-2 py-3 outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                                        placeholder="Model ID (e.g. global.anthropic.claude-opus-4-6-v1)"
+                                    />
+                                </>
+                            )}
 
 
                         </div>
 
 
-                        {selectedProvider !== 'ollama' && (!modelsChecked || (modelsChecked && availableModels.length === 0)) && (
+                        {selectedProvider !== 'ollama' && selectedProvider !== 'bedrock' && (!modelsChecked || (modelsChecked && availableModels.length === 0)) && (
 
                             <button
                                 onClick={fetchAvailableModels}
@@ -369,7 +395,7 @@ const TextProvider = ({
 
 
                     {/* Model Selection - only show if models are available */}
-                    {modelsChecked && availableModels.length > 0 ? (
+                    {modelsChecked && availableModels.length > 0 && selectedProvider !== 'bedrock' ? (
                         <div className="w-[205px]">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-3">

@@ -55,3 +55,8 @@ class UserConfig(BaseModel):
     CODEX_REFRESH_TOKEN: Optional[str] = None
     CODEX_TOKEN_EXPIRES: Optional[str] = None
     CODEX_ACCOUNT_ID: Optional[str] = None
+
+    # AWS Bedrock
+    BEDROCK_BEARER_TOKEN: Optional[str] = None
+    AWS_REGION: Optional[str] = None
+    BEDROCK_MODEL: Optional[str] = None

@@ -124,3 +124,16 @@ def set_codex_account_id_env(value: str):
 
 def set_codex_model_env(value: str):
     os.environ["CODEX_MODEL"] = value
+
+
+# Bedrock
+def set_bedrock_bearer_token_env(value: str):
+    os.environ["AWS_BEARER_TOKEN_BEDROCK"] = value
+
+
+def set_bedrock_region_env(value: str):
+    os.environ["AWS_REGION"] = value
+
+
+def set_bedrock_model_env(value: str):
+    os.environ["BEDROCK_MODEL"] = value

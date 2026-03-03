@@ -125,6 +125,11 @@ export const LLM_PROVIDERS: Record<string, LLMProviderOption> = {
     label: "ChatGPT",
     description: "ChatGPT Plus/Pro via OAuth",
   },
+  bedrock: {
+    value: "bedrock",
+    label: "AWS Bedrock",
+    description: "Amazon Bedrock via Bearer Token",
+  },
 };
 
 export const DALLE_3_QUALITY_OPTIONS = [

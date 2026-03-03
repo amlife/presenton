@@ -10,6 +10,8 @@ from utils.available_models import (
 from utils.get_env import (
     get_anthropic_api_key_env,
     get_anthropic_model_env,
+    get_bedrock_bearer_token_env,
+    get_bedrock_model_env,
     get_can_change_keys_env,
     get_google_model_env,
     get_openai_api_key_env,
@@ -26,6 +28,7 @@ from utils.get_env import get_custom_llm_url_env
 from utils.get_env import get_custom_model_env
 from utils.llm_provider import (
     get_llm_provider,
+    is_bedrock_selected,
     is_custom_llm_selected,
     is_ollama_selected,
 )
@@ -108,6 +111,12 @@ async def check_llm_and_image_provider_api_or_model_availability():
             print("Available models: ", available_models)
             if custom_model not in available_models:
                 raise Exception(f"Model {custom_model} is not available")
+
+        elif is_bedrock_selected():
+            if not get_bedrock_bearer_token_env():
+                raise Exception("AWS_BEARER_TOKEN_BEDROCK must be provided")
+            if not get_bedrock_model_env():
+                raise Exception("BEDROCK_MODEL must be provided")
 
         # Skip image provider and API key checks if image generation is disabled
         if is_image_generation_disabled():

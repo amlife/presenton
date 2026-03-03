@@ -44,6 +44,8 @@ from utils.async_iterator import iterator_to_async
 from utils.dummy_functions import do_nothing_async
 from utils.get_env import (
     get_anthropic_api_key_env,
+    get_bedrock_bearer_token_env,
+    get_bedrock_region_env,
     get_codex_access_token_env,
     get_codex_account_id_env,
     get_codex_refresh_token_env,
@@ -114,6 +116,8 @@ class LLMClient:
                 return self._get_custom_client()
             case LLMProvider.CODEX:
                 return self._get_codex_client()
+            case LLMProvider.BEDROCK:
+                return self._get_bedrock_client()
             case _:
                 raise HTTPException(
                     status_code=400,
@@ -159,6 +163,19 @@ class LLMClient:
         return AsyncOpenAI(
             base_url=get_custom_llm_url_env(),
             api_key=get_custom_llm_api_key_env() or "null",
+        )
+
+    def _get_bedrock_client(self) -> AsyncOpenAI:
+        bearer_token = get_bedrock_bearer_token_env()
+        if not bearer_token:
+            raise HTTPException(
+                status_code=400,
+                detail="AWS_BEARER_TOKEN_BEDROCK is not set",
+            )
+        region = get_bedrock_region_env() or "us-east-1"
+        return AsyncOpenAI(
+            base_url=f"https://bedrock-runtime.{region}.amazonaws.com",
+            api_key=bearer_token,
         )
 
     def _get_codex_headers(self) -> dict:

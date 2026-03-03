@@ -50,6 +50,11 @@ export interface LLMConfig {
   CODEX_TOKEN_EXPIRES?: string;
   CODEX_ACCOUNT_ID?: string;
 
+  // AWS Bedrock
+  BEDROCK_BEARER_TOKEN?: string;
+  AWS_REGION?: string;
+  BEDROCK_MODEL?: string;
+
   // Only used in UI settings
   USE_CUSTOM_URL?: boolean;
 }

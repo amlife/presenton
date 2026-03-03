@@ -5,6 +5,9 @@ from models.user_config import UserConfig
 from utils.get_env import (
     get_anthropic_api_key_env,
     get_anthropic_model_env,
+    get_bedrock_bearer_token_env,
+    get_bedrock_model_env,
+    get_bedrock_region_env,
     get_comfyui_url_env,
     get_comfyui_workflow_env,
     get_custom_llm_api_key_env,
@@ -38,6 +41,9 @@ from utils.parsers import parse_bool_or_none
 from utils.set_env import (
     set_anthropic_api_key_env,
     set_anthropic_model_env,
+    set_bedrock_bearer_token_env,
+    set_bedrock_model_env,
+    set_bedrock_region_env,
     set_comfyui_url_env,
     set_comfyui_workflow_env,
     set_custom_llm_api_key_env,
@@ -133,6 +139,9 @@ def get_user_config():
         CODEX_REFRESH_TOKEN=existing_config.CODEX_REFRESH_TOKEN or get_codex_refresh_token_env(),
         CODEX_TOKEN_EXPIRES=existing_config.CODEX_TOKEN_EXPIRES or get_codex_token_expires_env(),
         CODEX_ACCOUNT_ID=existing_config.CODEX_ACCOUNT_ID or get_codex_account_id_env(),
+        BEDROCK_BEARER_TOKEN=existing_config.BEDROCK_BEARER_TOKEN or get_bedrock_bearer_token_env(),
+        AWS_REGION=existing_config.AWS_REGION or get_bedrock_region_env(),
+        BEDROCK_MODEL=existing_config.BEDROCK_MODEL or get_bedrock_model_env(),
     )
 
 
@@ -196,6 +205,12 @@ def update_env_with_user_config():
         set_codex_token_expires_env(user_config.CODEX_TOKEN_EXPIRES)
     if user_config.CODEX_ACCOUNT_ID:
         set_codex_account_id_env(user_config.CODEX_ACCOUNT_ID)
+    if user_config.BEDROCK_BEARER_TOKEN:
+        set_bedrock_bearer_token_env(user_config.BEDROCK_BEARER_TOKEN)
+    if user_config.AWS_REGION:
+        set_bedrock_region_env(user_config.AWS_REGION)
+    if user_config.BEDROCK_MODEL:
+        set_bedrock_model_env(user_config.BEDROCK_MODEL)
 
 
 def save_codex_tokens_to_user_config() -> None:
